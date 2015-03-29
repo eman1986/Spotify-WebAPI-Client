@@ -1,5 +1,6 @@
 #PhpStorm project file
-.idea
+.idea/
+
 #composer files/folders
 composer.phar
 composer.lock
