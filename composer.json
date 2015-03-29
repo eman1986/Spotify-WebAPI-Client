@@ -1,16 +1,18 @@
 {
     "name": "eman1986/Spotify-WebAPI-Client",
+    "type": "library",
     "description": "A PHP 5.4 client for the Spotify Web API.",
     "keywords": ["Spotify", "Web API", "Spotify Web API"],
     "homepage": "https://github.com/eman1986/Spotify-WebAPI-Client",
     "license": "MIT",
     "autoload": {
         "psr-0": {
-            "Spotify\\": "src/"
+            "Spotify": "src"
         }
     },
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "nategood/httpful": "~0.2"
     },
     "authors": [
         {
