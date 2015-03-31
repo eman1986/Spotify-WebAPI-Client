@@ -11,6 +11,7 @@
 
 namespace Spotify;
 
+use Httpful\Mime;
 use Httpful\Request;
 
 final class Spotify {
@@ -105,7 +106,7 @@ final class Spotify {
             'state' => $state,
         ];
 
-        return ACCOUNT_URI . '/authorize/?' . http_build_query($parameters);
+        return self::ACCOUNT_URI . '/authorize/?' . http_build_query($parameters);
     }
 
     /**
@@ -125,8 +126,8 @@ final class Spotify {
             'grant_type'    => "authorization_code"
         ];
 
-        $response = Request::post(ACCOUNT_URI . '/api/token')
-            ->body($data)
+        $response = Request::post(self::ACCOUNT_URI . '/api/token')
+            ->body(json_encode($data), Mime::JSON)
             ->send();
 
         $this->setAccessToken($response->access_token);
@@ -148,9 +149,9 @@ final class Spotify {
             'grant_type'    => "refresh_token"
         ];
 
-        $response = Request::post(ACCOUNT_URI . '/api/token')
+        $response = Request::post(self::ACCOUNT_URI . '/api/token')
             ->addHeader('Authorization', 'Basic ' . $basicAuthEncode)
-            ->body($data)
+            ->body(json_encode($data), Mime::JSON)
             ->send();
 
         $this->setAccessToken($response->access_token);
@@ -170,9 +171,9 @@ final class Spotify {
             'grant_type'    => "client_credentials"
         ];
 
-        $response = Request::post(ACCOUNT_URI . '/api/token')
+        $response = Request::post(self::ACCOUNT_URI . '/api/token')
             ->addHeader('Authorization', 'Basic ' . $basicAuthEncode)
-            ->body($data)
+            ->body(json_encode($data), Mime::JSON)
             ->send();
 
         $this->setAccessToken($response->access_token);
