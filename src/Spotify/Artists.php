@@ -25,11 +25,17 @@ final class Artists {
      * Get an Artist.
      * @param string $artistId
      * @return mixed
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function GetArtist($artistId) {
         try {
             $response = Request::get(Spotify::BASE_URI . sprintf('/v1/artists/%s', $artistId))->send();
+
+            //see if any errors resulted.
+            if (!is_null($response->body->error)) {
+                throw new \Exception($response->body->error->message);
+            }
 
             return $response->body;
         } catch (Exception $e) {
@@ -61,6 +67,7 @@ final class Artists {
      * @param int $offset
      * @param string $market
      * @return mixed
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function GetArtistAlbums($artistId, $albumType, $limit=0, $offset=0, $market='') {
@@ -86,6 +93,11 @@ final class Artists {
 
             $response = Request::get($uri)->send();
 
+            //see if any errors resulted.
+            if (!is_null($response->body->error)) {
+                throw new \Exception($response->body->error->message);
+            }
+
             return $response->body;
         } catch (Exception $e) {
             echo $e->getMessage();
@@ -97,11 +109,17 @@ final class Artists {
      * @param string $artistId
      * @param string $country
      * @return mixed
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function GetTopTracks($artistId, $country) {
         try {
             $response = Request::get(Spotify::BASE_URI . sprintf('/v1/artists/%s/top-tracks?country=%s', $artistId, $country))->send();
+
+            //see if any errors resulted.
+            if (!is_null($response->body->error)) {
+                throw new \Exception($response->body->error->message);
+            }
 
             return $response->body;
         } catch (Exception $e) {
@@ -113,11 +131,17 @@ final class Artists {
      * Get an Artist's Related Artists
      * @param string $artistId
      * @return mixed
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function FindRelatedArtists($artistId) {
         try {
             $response = Request::get(Spotify::BASE_URI . sprintf('/v1/artists/%s/related-artists', $artistId))->send();
+
+            //see if any errors resulted.
+            if (!is_null($response->body->error)) {
+                throw new \Exception($response->body->error->message);
+            }
 
             return $response->body;
         } catch (Exception $e) {

@@ -20,6 +20,7 @@ final class Albums {
      * @param string $albumId Spotify Album Id
      * @param string $market
      * @return mixed
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function GetAlbum($albumId, $market='') {
@@ -29,6 +30,11 @@ final class Albums {
                 '';
 
             $response = Request::get(Spotify::BASE_URI . sprintf('/v1/albums/%s', $albumId) . $qs)->send();
+
+            //see if any errors resulted.
+            if (!is_null($response->body->error)) {
+                throw new \Exception($response->body->error->message);
+            }
 
             return $response->body;
         } catch (Exception $e) {
@@ -64,6 +70,7 @@ final class Albums {
      * @param int $offset
      * @param string $market
      * @return mixed
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function GetAlbumTracks($albumId, $limit=0, $offset=0, $market='') {
@@ -84,6 +91,11 @@ final class Albums {
                 Spotify::BASE_URI . sprintf('/v1/albums/%s/tracks?', $albumId) . http_build_query($parameters);
 
             $response = Request::get($uri)->send();
+
+            //see if any errors resulted.
+            if (!is_null($response->body->error)) {
+                throw new \Exception($response->body->error->message);
+            }
 
             return $response->body;
         } catch (Exception $e) {

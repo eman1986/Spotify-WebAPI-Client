@@ -115,6 +115,7 @@ final class Spotify {
      * @param string $secret Secret Token provided by Spotify.
      * @param string $redirectUrl This parameter is used for validation only of callback url.
      * @param string $code Authorization code from User Request Interaction.
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function RequestAuthorizationToken($clientId, $secret, $redirectUrl, $code) {
@@ -127,18 +128,29 @@ final class Spotify {
         ];
 
         $response = Request::post(self::ACCOUNT_URI . '/api/token')
-            ->body(json_encode($data), Mime::JSON)
+            ->body(http_build_query($data), Mime::FORM)
+            ->expects(Mime::JSON)
             ->send();
 
-        $this->setAccessToken($response->access_token);
-        $this->setExpires($response->expires_in);
-        $this->setRefreshToken($response->refresh_token);
+        //see if any errors resulted.
+        if (!is_null($response->body->error)) {
+            if (is_null($response->body->error_description)) {
+                throw new \Exception($response->body->error);
+            } else {
+                throw new \Exception($response->body->error_description);
+            }
+        }
+
+        $this->setAccessToken($response->body->access_token);
+        $this->setExpires($response->body->expires_in);
+        $this->setRefreshToken($response->body->refresh_token);
     }
 
     /**
      * Refresh Authorization Token
      * @param string $clientId Client ID provided by Spotify.
      * @param string $secret Secret Token provided by Spotify.
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function RequestRefreshToken($clientId, $secret) {
@@ -151,16 +163,28 @@ final class Spotify {
 
         $response = Request::post(self::ACCOUNT_URI . '/api/token')
             ->addHeader('Authorization', 'Basic ' . $basicAuthEncode)
-            ->body(json_encode($data), Mime::JSON)
+            ->body(http_build_query($data), Mime::FORM)
+            ->expects(Mime::JSON)
             ->send();
 
-        $this->setAccessToken($response->access_token);
-        $this->setExpires($response->expires_in);
+        //see if any errors resulted.
+        if (!is_null($response->body->error)) {
+            if (is_null($response->body->error_description)) {
+                throw new \Exception($response->body->error);
+            } else {
+                throw new \Exception($response->body->error_description);
+            }
+        }
+
+        $this->setAccessToken($response->body->access_token);
+        $this->setExpires($response->body->expires_in);
     }
 
     /**
+     * Client Credential Request.
      * @param string $clientId Client ID provided by Spotify.
      * @param string $secret Secret Token provided by Spotify.
+     * @throws \Exception
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function RequestClientCredentials($clientId, $secret) {
@@ -173,10 +197,19 @@ final class Spotify {
 
         $response = Request::post(self::ACCOUNT_URI . '/api/token')
             ->addHeader('Authorization', 'Basic ' . $basicAuthEncode)
-            ->body(json_encode($data), Mime::JSON)
+            ->body(http_build_query($data), Mime::FORM)
+            ->expects(Mime::JSON)
             ->send();
 
-        $this->setAccessToken($response->access_token);
-        $this->setExpires($response->expires_in);
+        if (!is_null($response->body->error)) {
+            if (is_null($response->body->error_description)) {
+                throw new \Exception($response->body->error);
+            } else {
+                throw new \Exception($response->body->error_description);
+            }
+        }
+
+        $this->setAccessToken($response->body->access_token);
+        $this->setExpires($response->body->expires_in);
     }
 }
