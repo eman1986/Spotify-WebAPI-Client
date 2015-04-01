@@ -1,28 +1,20 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// ================
-//      CONFIG
-// ================
-$clientId = '';
-$secret = '';
-$callbackUrl = '';
-
-
-$api = new \Spotify\Spotify();
+$api = new \Spotify\Spotify('CLIENT ID HERE', 'SECRET HERE', 'CALLBACK URI HERE');
 
 $scope = array(
     Spotify\Scopes::None
 );
 
-$authLink = $api->BuildRequestUrl($clientId, $callbackUrl, $scope);
+$authLink = $api->BuildRequestUrl($scope);
 
 echo "saving request auth link to file.\n";
 file_put_contents('auth-link.json', $authLink);
 
 $code = '';
 
-$api->RequestAuthorizationToken($clientId, $secret, $callbackUrl, $code);
+$api->RequestAuthorizationToken($code);
 
 $results = array(
     "AccessToken" => $api->getAccessToken(),
