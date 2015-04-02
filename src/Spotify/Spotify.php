@@ -62,4 +62,22 @@ final class Spotify {
 
         return self::ACCOUNT_URI . '/authorize/?' . http_build_query($parameters);
     }
+
+    /**
+     * Convert Spotify object IDs to Spotify URIs.
+     * @param array $ids
+     * @return array
+     */
+    public static function idToUri($ids)
+    {
+        $ids = (array) $ids;
+        for ($i = 0; $i < count($ids); $i++) {
+            if (strpos($ids[$i], 'spotify:track:') !== false) {
+                continue;
+            }
+            $ids[$i] = 'spotify:track:' . $ids[$i];
+        }
+
+        return $ids;
+    }
 }
